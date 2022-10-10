@@ -1,6 +1,12 @@
 // Global vars
 var deferral, fs, elementtree, path;
 
+var Q = require("q"),
+    fs = require("fs"),
+    path = require("path"),
+    elementtree = require("elementtree");
+// Updated syntax
+
 var disableAllowBackup = (function () {
 
     var disableAllowBackup = {};
@@ -57,6 +63,8 @@ var disableAllowBackup = (function () {
                 root.set("xmlns:tools", "http://schemas.android.com/tools");
                 applicationElement.set("android:allowBackup", "false");
                 applicationElement.set("tools:replace", "android:allowBackup");
+                applicationElement.set("android:usesCleartextTraffic", "false"); // Added this for own custom manifest
+                applicationElement.set("android:hasFragileUserData", "true");    // Added this for own custom manifest            
             } else {
                 throw new Error("Invalid AndroidManifest.xml structure. No <application> tag found.");
             }
@@ -71,11 +79,7 @@ var disableAllowBackup = (function () {
 })();
 
 module.exports = function (ctx) {
-    var Q = ctx.requireCordovaModule("q");
-    fs = ctx.requireCordovaModule("fs");
-    path = ctx.requireCordovaModule("path");
-    elementtree = ctx.requireCordovaModule("elementtree");
-
+    
     deferral = Q.defer();
 
     try {
